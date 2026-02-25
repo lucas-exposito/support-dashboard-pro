@@ -5,6 +5,10 @@ import TicketsChart from "@/components/dashboard/TicketsChart";
 import CategoryChart from "@/components/dashboard/CategoryChart";
 import RecentTickets from "@/components/dashboard/RecentTickets";
 import ResultsCard from "@/components/dashboard/ResultsCard";
+import StatusPieChart from "@/components/dashboard/StatusPieChart";
+import ResponseTimeChart from "@/components/dashboard/ResponseTimeChart";
+import SlaMetrics from "@/components/dashboard/SlaMetrics";
+import TeamPerformance from "@/components/dashboard/TeamPerformance";
 
 const kpis = [
   { title: "Total de Chamados", value: "1.284", change: "+12%", trend: "up" as const, icon: Ticket },
@@ -50,12 +54,26 @@ const Index = () => (
           ))}
         </div>
 
-        {/* Charts */}
+        {/* Charts Row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
             <TicketsChart />
           </div>
+          <StatusPieChart />
+        </div>
+
+        {/* Charts Row 2 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <ResponseTimeChart />
+          </div>
           <CategoryChart />
+        </div>
+
+        {/* Performance + SLA */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SlaMetrics />
+          <TeamPerformance />
         </div>
 
         {/* Table + Results */}
