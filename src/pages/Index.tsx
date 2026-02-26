@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Ticket, Clock, Users, Activity, Bell, Search, CalendarIcon, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -172,49 +173,72 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Tab: Visão Geral */}
-          {activeTab === "overview" && (
-            <div className="space-y-6 animate-fade-in">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2"><TicketsChart /></div>
-                <StatusPieChart />
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2"><ResponseTimeChart /></div>
-                <CategoryChart />
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2"><RecentTickets searchQuery={searchQuery} /></div>
-                <ResultsCard />
-              </div>
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            {/* Tab: Visão Geral */}
+            {activeTab === "overview" && (
+              <motion.div
+                key="overview"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="space-y-6"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="lg:col-span-2"><TicketsChart /></div>
+                  <StatusPieChart />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="lg:col-span-2"><ResponseTimeChart /></div>
+                  <CategoryChart />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="lg:col-span-2"><RecentTickets searchQuery={searchQuery} /></div>
+                  <ResultsCard />
+                </div>
+              </motion.div>
+            )}
 
-          {/* Tab: Chamados */}
-          {activeTab === "tickets" && (
-            <div className="space-y-6 animate-fade-in">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <StatusPieChart />
-                <CategoryChart />
-                <ResultsCard />
-              </div>
-              <RecentTickets searchQuery={searchQuery} />
-            </div>
-          )}
+            {/* Tab: Chamados */}
+            {activeTab === "tickets" && (
+              <motion.div
+                key="tickets"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="space-y-6"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <StatusPieChart />
+                  <CategoryChart />
+                  <ResultsCard />
+                </div>
+                <RecentTickets searchQuery={searchQuery} />
+              </motion.div>
+            )}
 
-          {/* Tab: Equipe */}
-          {activeTab === "team" && (
-            <div className="space-y-6 animate-fade-in">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <SlaMetrics />
-                <TeamPerformance />
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2"><ResponseTimeChart /></div>
-                <ResultsCard />
-              </div>
-            </div>
-          )}
+            {/* Tab: Equipe */}
+            {activeTab === "team" && (
+              <motion.div
+                key="team"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="space-y-6"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <SlaMetrics />
+                  <TeamPerformance />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="lg:col-span-2"><ResponseTimeChart /></div>
+                  <ResultsCard />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
     </div>

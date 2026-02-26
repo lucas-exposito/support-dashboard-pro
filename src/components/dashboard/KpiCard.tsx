@@ -1,4 +1,5 @@
 import { TrendingUp, TrendingDown, type LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface KpiCardProps {
   title: string;
@@ -10,9 +11,12 @@ interface KpiCardProps {
 }
 
 const KpiCard = ({ title, value, change, trend, icon: Icon, delay = 0 }: KpiCardProps) => (
-  <div
-    className="glass-card p-5 opacity-0 animate-fade-in group hover:glow-border transition-shadow duration-300"
-    style={{ animationDelay: `${delay}ms` }}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, delay: delay / 1000, ease: "easeOut" }}
+    whileHover={{ scale: 1.02, y: -2 }}
+    className="glass-card p-5 group hover:glow-border transition-shadow duration-300"
   >
     <div className="flex items-start justify-between mb-4">
       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -25,7 +29,7 @@ const KpiCard = ({ title, value, change, trend, icon: Icon, delay = 0 }: KpiCard
     </div>
     <p className="text-2xl font-bold text-foreground tracking-tight">{value}</p>
     <p className="text-xs text-muted-foreground mt-1">{title}</p>
-  </div>
+  </motion.div>
 );
 
 export default KpiCard;
