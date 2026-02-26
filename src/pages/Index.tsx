@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Ticket, Clock, Users, Activity, Bell, Search, CalendarIcon, X } from "lucide-react";
+import { Ticket, Clock, Users, Activity, Bell, Search, CalendarIcon, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useTheme } from "@/hooks/use-theme";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -32,6 +33,7 @@ const tabs = [
 ];
 
 const Index = () => {
+  const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
@@ -132,6 +134,17 @@ const Index = () => {
                 </button>
               )}
 
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg hover:bg-secondary transition-colors"
+                aria-label="Alternar tema"
+              >
+                {theme === "dark" ? (
+                  <Sun className="w-4 h-4 text-muted-foreground" />
+                ) : (
+                  <Moon className="w-4 h-4 text-muted-foreground" />
+                )}
+              </button>
               <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
                 <Bell className="w-4 h-4 text-muted-foreground" />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full animate-pulse-glow" />
