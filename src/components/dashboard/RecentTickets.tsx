@@ -1,5 +1,12 @@
 import { useState, useMemo } from "react";
-import { Circle, Search, Filter, X } from "lucide-react";
+import { Circle, Search, Filter, X, Clock, Tag, User, MessageSquare } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const allTickets = [
   { id: "#TW-1042", title: "Falha na VPN corporativa", status: "Em andamento", priority: "Alta", time: "2h atrás", statusColor: "text-warning", category: "Rede" },
@@ -29,7 +36,7 @@ interface RecentTicketsProps {
 
 const RecentTickets = ({ searchQuery = "" }: RecentTicketsProps) => {
   const [statusFilter, setStatusFilter] = useState("Todos");
-
+  const [selectedTicket, setSelectedTicket] = useState<typeof allTickets[0] | null>(null);
   const filtered = useMemo(() => {
     return allTickets.filter((t) => {
       const matchesSearch =
@@ -89,7 +96,7 @@ const RecentTickets = ({ searchQuery = "" }: RecentTicketsProps) => {
               </tr>
             ) : (
               filtered.map((t) => (
-                <tr key={t.id} className="border-b border-border/50 hover:bg-secondary/30 transition-colors cursor-pointer">
+                <tr key={t.id} onClick={() => setSelectedTicket(t)} className="border-b border-border/50 hover:bg-secondary/30 transition-colors cursor-pointer">
                   <td className="py-3 font-mono text-muted-foreground">{t.id}</td>
                   <td className="py-3 text-foreground">{t.title}</td>
                   <td className="py-3">
@@ -113,6 +120,52 @@ const RecentTickets = ({ searchQuery = "" }: RecentTicketsProps) => {
           </tbody>
         </table>
       </div>
+
+      <Dialog open={!!selectedTicket} onOpenChange={(open) => !open && setSelectedTicket(null)}>
+        <DialogContent className="bg-card border-border max-w-md">
+          {selectedTicket && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-foreground">
+                  <span className="font-mono text-muted-foreground text-sm">{selectedTicket.id}</span>
+                </DialogTitle>
+                <DialogDescription className="text-base text-foreground font-medium mt-1">
+                  {selectedTicket.title}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 mt-2">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex items-center gap-2 text-xs">
+                    <Circle className={`w-2 h-2 fill-current ${selectedTicket.statusColor}`} />
+                    <span className="text-muted-foreground">Status:</span>
+                    <span className="text-foreground font-medium">{selectedTicket.status}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <Tag className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">Prioridade:</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${priorityStyles[selectedTicket.priority]}`}>
+                      {selectedTicket.priority}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <MessageSquare className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">Categoria:</span>
+                    <span className="text-foreground font-medium">{selectedTicket.category}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <Clock className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">Aberto:</span>
+                    <span className="text-foreground font-medium">{selectedTicket.time}</span>
+                  </div>
+                </div>
+                <div className="border-t border-border pt-3">
+                  <p className="text-xs text-muted-foreground">Descrição do chamado será exibida aqui quando conectado ao backend.</p>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
