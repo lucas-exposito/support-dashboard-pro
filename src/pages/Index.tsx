@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import Sidebar from "@/components/dashboard/Sidebar";
+import Sidebar, { MobileSidebarTrigger } from "@/components/dashboard/Sidebar";
 import KpiCard from "@/components/dashboard/KpiCard";
 import TicketsChart from "@/components/dashboard/TicketsChart";
 import CategoryChart from "@/components/dashboard/CategoryChart";
@@ -50,17 +50,20 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      <main className="ml-64 min-h-screen">
+      <main className="lg:ml-64 min-h-screen">
         {/* Header */}
-        <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md px-8 py-4">
+        <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md px-4 sm:px-8 py-4">
           <div className="flex items-center justify-between mb-3">
-            <div>
-              <h2 className="text-lg font-bold text-foreground">Dashboard</h2>
-              <p className="text-xs text-muted-foreground">Painel de controle de chamados — TechWave Solutions</p>
-            </div>
             <div className="flex items-center gap-3">
+              <MobileSidebarTrigger />
+              <div>
+                <h2 className="text-lg font-bold text-foreground">Dashboard</h2>
+                <p className="text-xs text-muted-foreground hidden sm:block">Painel de controle de chamados — TechWave Solutions</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Search */}
-              <div className="relative">
+              <div className="relative hidden sm:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   value={searchQuery}
@@ -75,7 +78,8 @@ const Index = () => {
                 )}
               </div>
 
-              {/* Date From */}
+              {/* Date From - hidden on mobile */}
+              <div className="hidden md:block">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -99,8 +103,10 @@ const Index = () => {
                   />
                 </PopoverContent>
               </Popover>
+              </div>
 
-              {/* Date To */}
+              {/* Date To - hidden on mobile */}
+              <div className="hidden md:block">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -124,6 +130,7 @@ const Index = () => {
                   />
                 </PopoverContent>
               </Popover>
+              </div>
 
               {hasFilters && (
                 <button
@@ -178,7 +185,7 @@ const Index = () => {
         </header>
 
         {/* Content */}
-        <div className="p-8 space-y-6">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-6">
           {/* KPIs - always visible */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {kpis.map((kpi, i) => (
