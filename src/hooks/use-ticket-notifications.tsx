@@ -13,7 +13,16 @@ const mockTickets = [
   { id: "#4828", title: "VPN desconectando constantemente", priority: "Crítica", category: "Rede" },
 ];
 
-const priorityConfig: Record<string, { icon: typeof Ticket; color: string }> = {
+export type TicketNotification = {
+  id: string;
+  title: string;
+  priority: string;
+  category: string;
+  timestamp: Date;
+  read: boolean;
+};
+
+export const priorityConfig: Record<string, { icon: typeof Ticket; color: string }> = {
   Crítica: { icon: AlertTriangle, color: "text-destructive" },
   Alta: { icon: AlertTriangle, color: "text-warning" },
   Média: { icon: Clock, color: "text-primary" },
@@ -22,30 +31,46 @@ const priorityConfig: Record<string, { icon: typeof Ticket; color: string }> = {
 
 export function useTicketNotifications() {
   const indexRef = useRef(0);
-  const [notificationCount, setNotificationCount] = useState(0);
+  const [notifications, setNotifications] = useState<TicketNotification[]>([]);
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const showNotification = useCallback(() => {
     const ticket = mockTickets[indexRef.current % mockTickets.length];
     indexRef.current++;
     const config = priorityConfig[ticket.priority] || priorityConfig.Média;
 
-    setNotificationCount((c) => c + 1);
+    const newNotification: TicketNotification = {
+      ...ticket,
+      timestamp: new Date(),
+      read: false,
+    };
+
+    setNotifications((prev) => [newNotification, ...prev]);
 
     toast(ticket.title, {
       description: `${ticket.id} · ${ticket.category} · Prioridade ${ticket.priority}`,
       icon: <config.icon className={`w-4 h-4 ${config.color}`} />,
       duration: 5000,
-      action: {
-        label: "Ver",
-        onClick: () => {},
-      },
+      action: { label: "Ver", onClick: () => {} },
     });
   }, []);
 
-  const clearCount = useCallback(() => setNotificationCount(0), []);
+  const markAllRead = useCallback(() => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  }, []);
+
+  const markAsRead = useCallback((id: string, timestamp: Date) => {
+    setNotifications((prev) =>
+      prev.map((n) =>
+        n.id === id && n.timestamp === timestamp ? { ...n, read: true } : n
+      )
+    );
+  }, []);
+
+  const clearAll = useCallback(() => setNotifications([]), []);
 
   useEffect(() => {
-    // First notification after 8s, then every 15-30s
     const firstTimeout = setTimeout(() => {
       showNotification();
       const interval = setInterval(() => {
@@ -53,9 +78,8 @@ export function useTicketNotifications() {
       }, 15000 + Math.random() * 15000);
       return () => clearInterval(interval);
     }, 8000);
-
     return () => clearTimeout(firstTimeout);
   }, [showNotification]);
 
-  return { notificationCount, clearCount, showNotification };
+  return { notifications, unreadCount, showNotification, markAllRead, markAsRead, clearAll };
 }
