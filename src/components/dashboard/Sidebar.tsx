@@ -1,4 +1,7 @@
-import { LayoutDashboard, Ticket, BarChart3, Users, Settings, Headphones, Zap } from "lucide-react";
+import { LayoutDashboard, Ticket, BarChart3, Users, Settings, Headphones, Zap, Menu } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", active: true },
@@ -8,8 +11,8 @@ const navItems = [
   { icon: Settings, label: "Configurações" },
 ];
 
-const Sidebar = () => (
-  <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col z-50">
+const SidebarContent = () => (
+  <>
     <div className="p-6 flex items-center gap-3">
       <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
         <Zap className="w-5 h-5 text-primary-foreground" />
@@ -43,6 +46,31 @@ const Sidebar = () => (
       </div>
       <p className="text-[11px] text-muted-foreground">12 chamados em aberto</p>
     </div>
+  </>
+);
+
+export const MobileSidebarTrigger = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <button className="p-2 rounded-lg hover:bg-secondary transition-colors lg:hidden">
+          <Menu className="w-5 h-5 text-foreground" />
+        </button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-64 p-0 bg-sidebar border-sidebar-border">
+        <div className="h-full flex flex-col">
+          <SidebarContent />
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+const Sidebar = () => (
+  <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex-col z-50">
+    <SidebarContent />
   </aside>
 );
 
