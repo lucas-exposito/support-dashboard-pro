@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTicketNotifications } from "@/hooks/use-ticket-notifications";
-import { Ticket, Clock, Users, Activity, Bell, Search, CalendarIcon, X, Sun, Moon } from "lucide-react";
+import { Ticket, Clock, Users, Activity, Search, CalendarIcon, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import Sidebar, { MobileSidebarTrigger } from "@/components/dashboard/Sidebar";
+import NotificationPanel from "@/components/dashboard/NotificationPanel";
 import KpiCard from "@/components/dashboard/KpiCard";
 import TicketsChart from "@/components/dashboard/TicketsChart";
 import CategoryChart from "@/components/dashboard/CategoryChart";
@@ -35,7 +36,7 @@ const tabs = [
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
-  const { notificationCount, clearCount, showNotification } = useTicketNotifications();
+  const { notifications, unreadCount, markAllRead, markAsRead, clearAll } = useTicketNotifications();
   const [activeTab, setActiveTab] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
@@ -154,20 +155,13 @@ const Index = () => {
                   <Moon className="w-4 h-4 text-muted-foreground" />
                 )}
               </button>
-              <button
-                onClick={() => { showNotification(); clearCount(); }}
-                className="relative p-2 rounded-lg hover:bg-secondary transition-colors"
-              >
-                <Bell className="w-4 h-4 text-muted-foreground" />
-                {notificationCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold animate-pulse-glow">
-                    {notificationCount > 9 ? "9+" : notificationCount}
-                  </span>
-                )}
-                {notificationCount === 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full animate-pulse-glow" />
-                )}
-              </button>
+              <NotificationPanel
+                notifications={notifications}
+                unreadCount={unreadCount}
+                onMarkAllRead={markAllRead}
+                onMarkAsRead={markAsRead}
+                onClearAll={clearAll}
+              />
               <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary">
                 TW
               </div>
